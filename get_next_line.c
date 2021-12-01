@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include "get_next_line_utils.c"
 
 char	*get_next_line(int fd)
 {
 	int		read_ret;
+	int		len_buff;
 	char	*saved[OPEN_MAX]; //the remain of the returned line
 	char	buff[BUFFER_SIZE + 1];
 	char	*line;
@@ -26,27 +26,35 @@ char	*get_next_line(int fd)
 	if (fd < 0)
 		return (NULL);
 	// while read_ret not EOF (0) or error (-1)
-	while (read_ret = read(fd, buff, BUFFER_SIZE) > 0)
+	read_ret = 42;
+	line = NULL;
+	while (read_ret > 0)
 	{
+		read_ret = read(fd, buff, BUFFER_SIZE);
 		// put \0 in buffer[read_ret + 1]
 		buff[read_ret + 1] = '\0';
 		// verify if saved exist, if doesnt malloc
 		if (!saved[fd])
-			saved[fd] = malloc(sizeof(char) * BUFFER_SIZE + 1);
+		{
+			len_buff = ft_strlen(buff) + 1;
+			saved[fd] = malloc(sizeof(char) * len_buff);
+			saved[fd][len_buff] = '\0';
+		}
 		// strjoin saved + buffer
 		else
 		{
-			tmp = ft_strjoin(saved, buff);
+			tmp = ft_strjoin(saved[fd], buff);
 			free(saved[fd]);
 			saved[fd] = tmp;
 		}
 		// verify if saved have \n, if have break
-		if ((new_line_pointer = ft_strchr(saved[fd], '\n')) != NULL)
+		new_line_pointer = ft_strchr(saved[fd], '\n');
+		if (new_line_pointer != NULL)
 			break;
 	}
 	//divide, before \n goes to line, after goes to saved
 	//return line or error according to output_check
-	return (output_check(read_ret, fd,  saved, new_line_pointer, line));
+	return (output_check(read_ret, saved[fd], new_line_pointer, line));
 	
 	
 	

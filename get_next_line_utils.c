@@ -12,23 +12,27 @@
 
 #include "get_next_line.h"
 
-char	*output_check(int read_ret, int fd, char *saved, char *new_line_pointer, char *line)
+char	*output_check(int read_ret, char *saved, char *new_line_pointer, char *line)
 {
 	size_t	i;
 	size_t len_line;
 	
-	size_t len_line = saved - new_line_pointer;
+	i = -1;
+	len_line = saved - new_line_pointer;
 	line = malloc(sizeof(char) * len_line + 1);
 	line[len_line + 1] = '\0';
 	
 	// return for EOF or error
-	if (read_ret < 0 || (read_ret == 0 && saved[fd] == NULL))
+	if (read_ret < 0 || (read_ret == 0 && saved == NULL))
 		return (0);
 	else
 	{
 		//divide, before \n goes to line, after goes to saved
 		while (*saved != *new_line_pointer)
-			saved[i++] = line[i++];
+		{
+			saved[i] = line[i];
+			i++;
+		}
 	}
 	return (line);
 }
@@ -43,7 +47,7 @@ size_t	ft_strlen(char const *s1)
 	return (i);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char const *s2)
 {
 	char	*concat;
 	size_t	i;
