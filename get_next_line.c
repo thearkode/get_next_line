@@ -18,19 +18,15 @@ char	*get_next_line(int fd)
 	int		len_buff;
 	char	*saved[OPEN_MAX]; //the remain of the returned line
 	char	buff[BUFFER_SIZE + 1];
-	char	*line;
-	char	*new_line_pointer;
 	char	*tmp;
 	
 	// protections
 	if (fd < 0)
 		return (NULL);
+	read_ret = read(fd, buff, BUFFER_SIZE);
 	// while read_ret not EOF (0) or error (-1)
-	read_ret = 42;
-	line = NULL;
 	while (read_ret > 0)
 	{
-		read_ret = read(fd, buff, BUFFER_SIZE);
 		// put \0 in buffer[read_ret + 1]
 		buff[read_ret + 1] = '\0';
 		// verify if saved exist, if doesnt malloc
@@ -48,13 +44,13 @@ char	*get_next_line(int fd)
 			saved[fd] = tmp;
 		}
 		// verify if saved have \n, if have break
-		new_line_pointer = ft_strchr(saved[fd], '\n');
-		if (new_line_pointer != NULL)
+		if (ft_strchr(saved[fd], '\n') == 1)
 			break;
+		read_ret = read(fd, buff, BUFFER_SIZE);
 	}
 	//divide, before \n goes to line, after goes to saved
 	//return line or error according to output_check
-	return (output_check(read_ret, saved[fd], new_line_pointer, line));
+	return (output_check(read_ret, saved[fd]));
 	
 	
 	

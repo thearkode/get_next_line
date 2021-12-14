@@ -26,12 +26,14 @@
 
 char	*get_next_line(int fd);
 
-char	*output_check(int read_ret, char *saved, char *new_line_pointer, char *line);
+char	*output_check(int read_ret, char *saved);
+
+char	*ft_memcpy(char *dest, const void *src, size_t n);
 
 size_t	ft_strlen(char const *s1);
 
-char	*ft_strchr(const char *str, int c);
-
 char	*ft_strjoin(char *s1, char const *s2);
+
+int     ft_strchr(const char *str, char c);
 
 #endif
