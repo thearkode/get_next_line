@@ -23,35 +23,17 @@ NAME = get_next_line.a
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra -D BUFFER_SIZE=42
+CFLAGS = -Wall -Werror -Wextra -D BUFFER_SIZE=1
 
 HEADERS = get_next_line.h
 
 SRC = get_next_line.c get_next_line_utils.c
 
-SRC_B = 
-
-OBJ = $(addprefix $(OBJ_DIR),$(SRC:.c=.o))
-OBJ_DIR = obj/
-OBJ_B = $(addprefix $(OBJ_B_DIR),$(SRC_B:.c=.o)) #obj_b/ft_lstnew.o
-OBJ_B_DIR = obj_b/
-
 all: $(NAME)
 
-bonus: ${OBJ_B}
-	@ar rcs ${NAME} $(OBJ_B)
-
 $(NAME): $(OBJ)
-	@ar rcs $(NAME) $(OBJ)
+	gcc ${CFLAGS} ${SRC} -o $(NAME)
 	@echo "$(GREEN) get_next_line [$(NAME)] created!$(RESET)"
-
-$(OBJ_DIR)%.o: %.c
-	@mkdir -p obj
-	$(CC) $(CFLAGS) -I $(HEADERS) -c $< -o $@
-
-$(OBJ_B_DIR)%.o: %.c
-	@mkdir -p obj_b
-	$(CC) $(CFLAGS) -I $(HEADERS) -c $< -o $@
 
 clean:
 	@rm -rf $(OBJ_DIR)

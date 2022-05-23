@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# define FD_SIZE 4096
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 8
@@ -26,14 +27,18 @@
 
 char	*get_next_line(int fd);
 
-char	*output_check(int read_ret, char *saved);
+char	*output_check(int read_ret, char *saved[], int fd);
 
-char	*ft_memcpy(char *dest, const void *src, size_t n);
+char	*ft_memcpy(void *dest, const void *src, size_t n);
 
-size_t	ft_strlen(char const *s1);
+char    *ft_strdup(char *src);
 
-char	*ft_strjoin(char *s1, char const *s2);
+char	*ft_strndup(char *src, size_t len);
 
-int     ft_strchr(const char *str, char c);
+size_t	ft_strlen(const char *s1);
+
+char	*ft_strjoin(const char *s1, const char *s2);
+
+char    *ft_strchr(const char *str, char c);
 
 #endif

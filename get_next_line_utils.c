@@ -12,53 +12,84 @@
 
 #include "get_next_line.h"
 
-char	*output_check(int read_ret, char *saved)
+char	*output_check(int read_ret, char *saved[], int fd)
 {
-	size_t	i;
-	size_t	len_line;
+	//size_t	i;
+	size_t	len;
 	char	*line;
-	char **temp;
-	
-	i = 0;
-	len_line = ft_strchr(saved, '\n');
-	line = malloc(sizeof(char) * len_line + 1);
-	line[len_line + 1] = '\0';
-	temp = NULL;
+	char	*temp;
 	
 	// return for EOF or error
-	if (read_ret < 0 || (read_ret == 0 && saved == NULL))
-		return (0);
+	if (read_ret < 0 || (read_ret == 0 && !saved[fd]))
+		return (NULL);
+
+	len = 0;
+	while (saved[fd][len] != '\0' && saved[fd][len] != '\n')
+		len++;
+
+	if (saved[fd][len] == '\n')
+	{
+		line = ft_strndup(saved[fd], len);
+		temp = ft_strdup(&saved[fd][len + 1]);
+		free(saved[fd]);
+		saved[fd] = temp;
+	}
 	else
 	{
-		//divide, before \n goes to line, after goes to saved
-		line = ft_memcpy(line, saved, len_line);
-		*temp = &saved[len_line];
-		if (saved)
-			free(saved);
-		saved = *temp;
-		if (temp)
-			free(temp);	
+		line = ft_strdup(saved[fd]);
+		free(saved[fd]);
+		saved[fd] = NULL;
 	}
+
 	return (line);
 }
 
-char	*ft_memcpy(char *dest, const void *src, size_t n)
+char	*ft_strdup(char *src)
 {
-	char	*modsrc;
-	char	*moddest;
+	char *new;
+	int i;
 
+	if (!src)
+		return (NULL);
+	new = malloc(sizeof(char) * ft_strlen(src) + 1);
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (src[i] != '\0') {
+		new[i] = src[i];
+		i++;
+	}
+	new[i] = '\0';
+	return (new);
+}
+
+char	*ft_strndup(char *src, size_t len)
+{
+	char *new;
+	int i;
+
+	if (!src)
+		return (NULL);
+	new = malloc(sizeof(char) * len + 1);
+	if (!new)
+		return (NULL);
+	i = -1;
+	while (src[++i] && len--)
+		new[i] = src[i];
+	new[i] = '\0';
+	return (new);
+}
+
+char	*ft_memcpy(void *dest, const void *src, size_t n)
+{
 	if (!src && !dest)
 		return (0);
-	modsrc = (char *)src;
-	moddest = (char *)dest;
 	while (n--)
-		*moddest++ = *modsrc++;
-	//free(moddest);
-	//free(modsrc);
+		*(char *)dest++ = *(char *)src++;
 	return (dest);
 }
 
-size_t	ft_strlen(char const *s1)
+size_t	ft_strlen(const char *s1)
 {
 	size_t	i;
 	
@@ -68,39 +99,36 @@ size_t	ft_strlen(char const *s1)
 	return (i);
 }
 
-char	*ft_strjoin(char *s1, char const *s2)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
 	char	*concat;
 	size_t	i;
 	if (!s1 || !s2)
 		return (NULL);
-	concat = malloc(sizeof(char) * ft_strlen(s1) + ft_strlen(s2));
+	concat = malloc(sizeof(char) * ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!concat)
 		return (NULL);
 	i = 0;
-	while (*s1)
+	while (*s1 != '\0')
 		concat[i++] = *s1++;
-	while (*s2)
+	while (*s2 != '\0')
 		concat[i++] = *s2++;
-	concat[i] = '\0';
-	return (concat);
-	
-	
+	return (concat);	
 }
 
-int	ft_strchr(const char *str, char c)
+char *ft_strchr(const char *str, char c)
 {
 	int	i;
-	if (!str || !c)
-		return (-1);
 	i = 0;
-	while (str[i])
+	if (!str)
+		return (NULL);
+	while (str[i] != '\0')
 	{
 		if (str[i] == c)
-			return (1);
+			return ((char *)&str[i]);
 		i++;
 	}
-	return (i);
+	return (NULL);
 }
 /*
 int main(void)
